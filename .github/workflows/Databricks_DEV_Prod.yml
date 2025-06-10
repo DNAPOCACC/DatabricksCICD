@@ -38,7 +38,7 @@ jobs:
           $DEV_TOKEN
           EOF
 
-          databricks workspace export_dir /Workspace/your_path_in_dev exported_notebooks
+          databricks workspace export_dir /Workspace/core/
 
       - name: Import to Prod
         run: |
@@ -47,4 +47,4 @@ jobs:
           $PROD_TOKEN
           EOF
 
-          databricks workspace import_dir exported_notebooks /Workspace/your_path_in_prod --overwrite
+          databricks workspace import_dir exported_notebooks /Workspace/core/

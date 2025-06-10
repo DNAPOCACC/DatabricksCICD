@@ -1,46 +1,46 @@
-name: Deploy Databricks from Dev to Prod
+name: Deploy Databricks from Dev to Prod (New CLI)
 
 on:
   push:
     branches:
-      - main 
-  workflow_dispatch: 
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
-    name: Export from Dev and Import to Prod
     runs-on: ubuntu-latest
 
     env:
-      DEV_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
-      DEV_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
-      PROD_HOST: ${{ secrets.DATABRICKS_PROD_HOST }}
-      PROD_TOKEN: ${{ secrets.DATABRICKS_PROD_TOKEN }}
+      DATABRICKS_DEV_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
+      DATABRICKS_DEV_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
+      DATABRICKS_PROD_HOST: ${{ secrets.DATABRICKS_PROD_HOST }}
+      DATABRICKS_PROD_TOKEN: ${{ secrets.DATABRICKS_PROD_TOKEN }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      - name: Uninstall old CLI if any
+        run: pip uninstall -y databricks-cli
+
       - name: Install new Databricks CLI
-        run: pip install databricks
+        run: pip install --upgrade databricks
 
       - name: Export notebooks from Dev workspace
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_DEV_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_DEV_TOKEN }}
         run: |
-          pip install databricks-cli
           mkdir exported_notebooks
-          databricks auth login --host "$DEV_HOST" --token "$DEV_TOKEN"
-          databricks workspace export-dir --source /Workspace/your_path_in_dev --output exported_notebooks
+          databricks workspace export-dir --source /Workspace/core
 
       - name: Import notebooks to Prod workspace
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_PROD_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PROD_TOKEN }}
         run: |
-          pip install databricks-cli
-          databricks auth login --host "$PROD_HOST" --token "$PROD_TOKEN"
-          databricks workspace import-dir \
-            --input exported_notebooks \
-            --target /Workspace/core
-            --overwrite
+          databricks workspace import-dir --input exported_notebooks --target /Workspace/core

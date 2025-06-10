@@ -1,5 +1,4 @@
-name: Deploy Databricks from Dev to Prod (New CLI)
-
+name: Deploy Databricks from Dev to Prod
 on:
   #push:
    # branches:

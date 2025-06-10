@@ -19,7 +19,7 @@ jobs:
         run: |
           pip install --upgrade databricks
           mkdir exported_notebooks
-          databricks workspace export-dir --source /Workspace/core
+          databricks workspace export-dir --source /Workspace/core/
 
       - name: Import notebooks to Prod workspace
         env:
@@ -27,4 +27,4 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PROD_TOKEN }}
         run: |
           pip install --upgrade databricks
-          databricks workspace import-dir --input exported_notebooks --target /Workspace/core
+          databricks workspace import-dir --input exported_notebooks --target /Workspace/core/

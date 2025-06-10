@@ -1,4 +1,4 @@
-name: Deploy Databricks from Dev to Prod (New CLI)
+name: Deploy Databricks from Dev to Prod
 
 on:
   push:
@@ -31,14 +31,14 @@ jobs:
 
       - name: Export notebooks from Dev workspace
         run: |
+          pip install databricks
           mkdir exported_notebooks
           databricks auth login --host "$DEV_HOST" --token "$DEV_TOKEN"
-          databricks workspace export-dir \
-            --source /Workspace/core
-            --output exported_notebooks
+          databricks workspace export-dir --source /Workspace/your_path_in_dev --output exported_notebooks
 
       - name: Import notebooks to Prod workspace
         run: |
+          pip install databricks
           databricks auth login --host "$PROD_HOST" --token "$PROD_TOKEN"
           databricks workspace import-dir \
             --input exported_notebooks \

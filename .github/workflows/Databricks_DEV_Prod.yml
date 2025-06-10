@@ -1,14 +1,14 @@
-name: Deploy Databricks from Dev to Prod
+name: Deploy Databricks from Dev to Prod (New CLI)
 
 on:
   push:
     branches:
-      - main
+      - main 
   workflow_dispatch: 
 
 jobs:
   deploy:
-    name: Deploy notebooks and jobs to Prod
+    name: Export from Dev and Import to Prod
     runs-on: ubuntu-latest
 
     env:
@@ -26,25 +26,21 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: |
-          pip install databricks-cli
+      - name: Install new Databricks CLI
+        run: pip install databricks
 
-      - name: Export from Dev
+      - name: Export notebooks from Dev workspace
         run: |
           mkdir exported_notebooks
-          databricks configure --token <<EOF
-          $DEV_HOST
-          $DEV_TOKEN
-          EOF
+          databricks auth login --host "$DEV_HOST" --token "$DEV_TOKEN"
+          databricks workspace export-dir \
+            --source /Workspace/core
+            --output exported_notebooks
 
-          databricks workspace export_dir /Workspace/core/
-
-      - name: Import to Prod
+      - name: Import notebooks to Prod workspace
         run: |
-          databricks configure --token <<EOF
-          $PROD_HOST
-          $PROD_TOKEN
-          EOF
-
-          databricks workspace import_dir exported_notebooks /Workspace/core/
+          databricks auth login --host "$PROD_HOST" --token "$PROD_TOKEN"
+          databricks workspace import-dir \
+            --input exported_notebooks \
+            --target /Workspace/core
+            --overwrite

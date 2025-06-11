@@ -1,15 +1,17 @@
 bundle:
   name: my-dab-project
 
-artifacts:
-  my-job:
-    type: job
-    path: notebooks/core/*.py
+resources:
+  jobs:
+    my-job:
+      name: my-dev-job
+      tasks:
+        - task_key: run_notebook
+          notebook_task:
+            notebook_path: ./notebooks/core/*.py
+          existing_cluster_id: 3653682374616212
 
 targets:
   dev:
     workspace:
       host: https://adb-3653682374616212.12.azuredatabricks.net
-    jobs:
-      - name: my-dev-job
-        job_reference: my-job

@@ -9,7 +9,7 @@ resources:
         - task_key: run_notebook
           notebook_task:
             notebook_path: /Workspace/Core/00_CommonUtilityFunctions
-          existing_cluster_id: 3653682374616212
+          existing_cluster_id: 0515-065643-792haa2s?o=3653682374616212
 
 targets:
   dev:

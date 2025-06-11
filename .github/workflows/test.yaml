@@ -1,9 +1,9 @@
 name: Deploy Databricks from Dev to Prod (New CLI)
 
 on:
-  push:
-    branches:
-      - main
+  #push:
+  #  branches:
+     # - main
   workflow_dispatch:
 
 jobs:

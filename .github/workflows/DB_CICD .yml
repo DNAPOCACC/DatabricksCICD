@@ -1,6 +1,7 @@
-name: Test3 
+name: Deploy to Prod 
 
 on:
+  #push:
   workflow_dispatch:  # Manual trigger from GitHub UI
 
 jobs:
